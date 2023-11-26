@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-               node {
+               node('any') {
                 checkout scm
                }
             }
@@ -24,7 +24,7 @@ pipeline {
 
         stage('Build and Test') {
             steps {
-               node {
+               node('any'){
                 script {
                     sh 'npm install'
                     sh 'npm test'
@@ -35,7 +35,7 @@ pipeline {
 
         stage('Dockerize') {
             steps {
-             node {
+             node('any') {
                 script {
                     docker.build('todo-app-nodejs')
                 }
@@ -45,7 +45,7 @@ pipeline {
 
         stage('Publish to Docker Registry') {
             steps {
-              node {
+              node('any') {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                         docker.image('todo-app-nodejs').push("${env.BUILD_NUMBER}")
