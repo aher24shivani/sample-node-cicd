@@ -1,7 +1,13 @@
 //declarative pipeline
 
 pipeline {
-    agent any
+    agent 
+    {
+        docker {
+            image 'node:14' // Specify the Node.js version you need
+            args '-u root' // Optional: Run Docker commands as root
+        }
+    }
 
     environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('dockerhub')
