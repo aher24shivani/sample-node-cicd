@@ -16,34 +16,42 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+               node {
                 checkout scm
+               }
             }
         }
 
         stage('Build and Test') {
             steps {
+               node {
                 script {
                     sh 'npm install'
                     sh 'npm test'
                 }
+               }
             }
         }
 
         stage('Dockerize') {
             steps {
+             node {
                 script {
                     docker.build('todo-app-nodejs')
                 }
+             }
             }
         }
 
         stage('Publish to Docker Registry') {
             steps {
+              node {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                         docker.image('todo-app-nodejs').push("${env.BUILD_NUMBER}")
                     }
                 }
+              }
             }
         }
 
