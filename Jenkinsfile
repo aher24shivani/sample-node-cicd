@@ -64,11 +64,6 @@ pipeline {
             }
         }
 */        
-    } //stages
+    } //stages 
 
-    post {
-        always {
-            cleanWs()
-        }
-    }
-}
+}//pipeline
