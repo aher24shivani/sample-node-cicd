@@ -4,7 +4,9 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '5'))
     }
     environment {
-     DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+    SSH_CREDENTIALS = credentials('ssh_into_ec2')
+    EC2_INSTANCE_IP = '3.89.249.85'
     }
      stages {
         stage('Checkout') {
@@ -34,15 +36,11 @@ pipeline {
             }
         }
 
-        stage('Login') {
-      steps {
-        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'      
-         }        
-        }
         
-        stage('Push') {
+        stage('Push to registry') {
       steps {
-        sh 'docker push ahershiv/to-do-node-app'
+         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+         sh 'docker push ahershiv/to-do-node-app'
         }
        }
 
@@ -53,17 +51,8 @@ pipeline {
                     sh 'npm test'
                 }
             }
-        }
+        }    
 
-     /*   stage('Package') {
-            steps {
-                script {
-                    // Package the application
-                    sh ''
-                }
-            }
-        }    */
-    }
 
     post {
       always {
@@ -75,5 +64,7 @@ pipeline {
                     patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
                                [pattern: '.propsfile', type: 'EXCLUDE']])
         }
-    }
-}
+
+
+    }  //stages
+} //pipeline
