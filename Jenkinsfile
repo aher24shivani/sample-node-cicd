@@ -60,18 +60,19 @@ pipeline {
                 script 
                   {
                    // Stage environment set on ec2 instance
-                   withCredentials([sshUserPrivateKey(credentialsId: 'ssh_into_ec2', keyFileVariable: 'SSH_KEY')]) 
-                     {
-                       sh """
-                           ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ec2-user@\$EC2_INSTANCE_IP << EOF
-                               docker pull ahershiv/to-do-node-app
-                               docker stop to-do-node-app || true
-                               docker rm to-do-node-app || true
-                               docker run -d -p 8000:8000 --name to-do-node-app ahershiv/to-do-node-app
-                           EOF
-                          """
-                      } 
-                   } //script
+                   withCredentials([sshUserPrivateKey(credentialsId: 'ssh_into_ec2', keyFileVariable: 'SSH_KEY')]) {
+                     script {
+                     def remoteScript = """
+                     docker pull ahershiv/to-do-node-app
+                     docker stop to-do-node-app || true
+                     docker rm to-do-node-app || true
+                     docker run -d -p 8000:8000 --name to-do-node-app ahershiv/to-do-node-app
+                     """
+                     sh "echo '''${remoteScript}''' > remote_script.sh"
+                     sh "cat remote_script.sh | ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ec2-user@\$EC2_INSTANCE_IP /bin/bash -s"
+                     }
+                   }
+                 } //script
                 } //steps
           } //stage
           
