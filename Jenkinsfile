@@ -47,10 +47,17 @@ pipeline {
          stage('Run Tests') {
              steps {
                  script {
-                     // Run Mocha tests
-                     sh 'npm test'
+                    // Run Mocha tests and capture the exit code
+            def testsExitCode = sh(script: 'npm test', returnStatus: true)
+
+            // Check the exit code and act accordingly
+            if (testsExitCode != 0) {
+                error("Tests failed. Exiting the pipeline.")
+            } else {
+                echo "Tests passed. Proceeding with the pipeline."
                  }
-             }
+               }//script
+             } //steps
          }   
          
          stage('Deploy to Stage') 
@@ -90,5 +97,17 @@ pipeline {
               }
          }
 
+      post {
+        success {
+            emailext subject: "Pipeline Successful - ${currentBuild.fullDisplayName}",
+                      body: "The pipeline for ${env.JOB_NAME} ${env.BUILD_NUMBER} has successfully completed.",
+                      to: 'shivaanii.aher@gmail.com'
+        }
+        failure {
+            emailext subject: "Pipeline Failed - ${currentBuild.fullDisplayName}",
+                      body: "The pipeline for ${env.JOB_NAME} ${env.BUILD_NUMBER} has failed.\n\nConsole Output:\n${Jenkins.instance.getItem(env.JOB_NAME).getBuildByNumber(env.BUILD_NUMBER).getLog(100)}",
+                      to: 'shivaanii.aher@gmail.com'
+        }
+    }
 
  } //pipeline
