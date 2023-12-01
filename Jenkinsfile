@@ -63,11 +63,11 @@ pipeline {
                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh_into_ec2', keyFileVariable: 'SSH_KEY')]) 
                      {
                        sh """
-                           ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ec2-user@\$EC2_INSTANCE_IP << 'EOF'
+                           ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ec2-user@\$EC2_INSTANCE_IP << EOF
                                docker pull ahershiv/to-do-node-app
                                docker stop to-do-node-app || true
                                docker rm to-do-node-app || true
-                               docker run -d -p 3000:3000 --name to-do-node-app ahershiv/to-do-node-app
+                               docker run -d -p 8000:8000 --name to-do-node-app ahershiv/to-do-node-app
                            EOF
                           """
                       } 
