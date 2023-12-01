@@ -58,8 +58,16 @@ pipeline {
                  }
                }//script
              } //steps
-         }   
-         
+         }
+        
+         stage('Cleanup Docker Resources') {
+            steps {
+                script {
+                    sh 'docker system prune -f'
+                }
+            }
+        }
+
          stage('Deploy to Stage') 
           {
             steps 
