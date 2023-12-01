@@ -13,7 +13,7 @@ pipeline {
              steps {
                  script {
                      // Checkout code from the 'main' branch
-                     checkout([$class: 'GitSCM', branches: [[name: 'test']], userRemoteConfigs: [[url:'https://github.com/aher24shivani/sample-node-cicd.git']]])
+                     checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url:'https://github.com/aher24shivani/sample-node-cicd.git']]])
                  }
              }
          }
@@ -96,7 +96,7 @@ pipeline {
                                 [pattern: '.propsfile', type: 'EXCLUDE']])
               }
 
-        success {
+/*        success {
             emailext subject: "Pipeline Successful - ${currentBuild.fullDisplayName}",
                       body: "The pipeline for ${env.JOB_NAME} ${env.BUILD_NUMBER} has successfully completed.",
                       to: 'shivaanii.aher@gmail.com'
@@ -105,7 +105,7 @@ pipeline {
             emailext subject: "Pipeline Failed - ${currentBuild.fullDisplayName}",
                       body: "The pipeline for ${env.JOB_NAME} ${env.BUILD_NUMBER} has failed.\n\nConsole Output:\n${Jenkins.instance.getItem(env.JOB_NAME).getBuildByNumber(env.BUILD_NUMBER).getLog(100)}",
                       to: 'shivaanii.aher@gmail.com'
-        }
+        }   */
     }
 
  } //pipeline
