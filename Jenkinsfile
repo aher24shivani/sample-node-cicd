@@ -95,9 +95,7 @@ pipeline {
                      patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
                                 [pattern: '.propsfile', type: 'EXCLUDE']])
               }
-         }
 
-      post {
         success {
             emailext subject: "Pipeline Successful - ${currentBuild.fullDisplayName}",
                       body: "The pipeline for ${env.JOB_NAME} ${env.BUILD_NUMBER} has successfully completed.",
